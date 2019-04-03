@@ -7,7 +7,7 @@ import Queen from "./pieces/Queen";
 import Rook from "./pieces/Rook";
 export default class Promote extends React.Component {
   renderSquare(square, i, squareShade) {
-    return <Square piece={square} style={square.style} onClick = {this.selectPromotePieces.bind(this,square)}/>;
+    return <Square piece={square} style={square.style}/>;
   }
   selectPromotePieces = (square) => {
       return square
@@ -19,15 +19,16 @@ export default class Promote extends React.Component {
     new Knight(this.props.player)
   ];
   render() {
+      let promoteColor = this.props.player===1 ?"white":"black"
     return (
-      <div className="promote">
-        <div className="board-row">
+      <div className={"promote promote-"+ promoteColor} id={"promote-"+this.props.id}>
+        
           { this.promotePieces.map((ws, index) =>
             this.renderSquare(ws, index)
           )}
         </div>
       
-      </div>
+    
     );
   }
 }

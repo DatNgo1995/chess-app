@@ -3,8 +3,8 @@ import "../index.css";
 import Board from "./Board";
 import FallenSoldierBlock from "./FallenSoldierBlock";
 import initialiseChessBoard from "./helper";
-import Rook from './pieces/Rook';
-import Promote from './Promote'
+import Rook from "./pieces/Rook";
+import Promote from "./Promote";
 export default class Game extends React.Component {
   constructor() {
     super();
@@ -93,15 +93,17 @@ export default class Game extends React.Component {
             squares[enPassantPossible] = null;
           }
           // implement castle
-          else if ( squares[this.state.sourceSelection].name === "king" && srcToDestPath.length === 1 ){
-            if ( i > this.state.sourceSelection) {
-              squares[i+1] = null;
-              squares[i-1] = new Rook (this.state.player)
-              console.log(i, squares[i+3], squares[i+1])
-            }
-            else {
-              squares[i-2] = null;
-              squares[i+1] = new Rook (this.state.player)
+          else if (
+            squares[this.state.sourceSelection].name === "king" &&
+            srcToDestPath.length === 1
+          ) {
+            if (i > this.state.sourceSelection) {
+              squares[i + 1] = null;
+              squares[i - 1] = new Rook(this.state.player);
+              console.log(i, squares[i + 3], squares[i + 1]);
+            } else {
+              squares[i - 2] = null;
+              squares[i + 1] = new Rook(this.state.player);
             }
           }
           //set enPassantPossible
@@ -114,12 +116,20 @@ export default class Game extends React.Component {
             this.setState({ enPassantPossible: -1 });
           }
           //implement Promote
-          if (this.state.player === 1){
-              if ([0,1,2,3,4,5,6,7].indexOf(i) > 0 ) {
-
-              }
+          if (squares[this.state.sourceSelection].name === "pawn") {
+            if (
+              this.state.player === 1 &&
+              [0, 1, 2, 3, 4, 5, 6, 7].indexOf(i) > 0
+            ) {
+              document.getElementById("promote-" + i).style.display = "flex";
+            }
+            if (
+              this.state.player === 2 &&
+              [56, 57, 58, 59, 60, 61, 62, 63].indexOf(i) > 0
+            ) {
+              document.getElementById("promote-" + i).style.display = "flex";
+            }
           }
-
 
           console.log("whiteFallenSoldiers", whiteFallenSoldiers);
           console.log("blackFallenSoldiers", blackFallenSoldiers);
@@ -130,32 +140,50 @@ export default class Game extends React.Component {
           // check castle conditions
           if (this.state.sourceSelection === 0) {
             this.setState({
-              castlePosibility:{...this.state.castlePosibility,rookA8Moved: true}
+              castlePosibility: {
+                ...this.state.castlePosibility,
+                rookA8Moved: true
+              }
             });
           }
           if (this.state.sourceSelection === 7) {
             this.setState({
-              castlePosibility:{...this.state.castlePosibility,rookH8Moved: true}
+              castlePosibility: {
+                ...this.state.castlePosibility,
+                rookH8Moved: true
+              }
             });
           }
           if (this.state.sourceSelection === 56) {
             this.setState({
-              castlePosibility:{...this.state.castlePosibility,rookA1Moved: true}
+              castlePosibility: {
+                ...this.state.castlePosibility,
+                rookA1Moved: true
+              }
             });
           }
           if (this.state.sourceSelection === 63) {
             this.setState({
-              castlePosibility:{...this.state.castlePosibility,rookH1Moved: true}
+              castlePosibility: {
+                ...this.state.castlePosibility,
+                rookH1Moved: true
+              }
             });
           }
           if (this.state.sourceSelection === 4) {
             this.setState({
-              castlePosibility:{...this.state.castlePosibility,kingE8Moved: true}
+              castlePosibility: {
+                ...this.state.castlePosibility,
+                kingE8Moved: true
+              }
             });
           }
           if (this.state.sourceSelection === 60) {
             this.setState({
-              castlePosibility:{...this.state.castlePosibility,kingE1Moved: true}
+              castlePosibility: {
+                ...this.state.castlePosibility,
+                kingE1Moved: true
+              }
             });
           }
 
@@ -220,7 +248,6 @@ export default class Game extends React.Component {
                 />
               }
             </div>
-            
           </div>
         </div>
       </div>
