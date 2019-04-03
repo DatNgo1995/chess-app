@@ -10,7 +10,7 @@ export default class Rook extends Piece {
     let diff = 8 - mod;
     return (Math.abs(src - dest) % 8 === 0 || (dest >= (src - mod) && dest < (src + diff)));
   }
-
+  name ='rook'
   /**
    * get path between src and dest (src and dest exclusive)
    * @param  {num} src  

@@ -14,13 +14,14 @@ export default class Game extends React.Component {
       player: 1,
       sourceSelection: -1,
       status: '',
-      turn: 'white'
+      turn: 'white',
+      enPassantPossible: -1 // for white : 24-31, for black 32-39
     }
   }
  
   handleClick(i){
-    const squares = this.state.squares.slice();
     
+    const squares = this.state.squares.slice();
     if(this.state.sourceSelection === -1){
       if(!squares[i] || squares[i].player !== this.state.player){
         this.setState({status: "Wrong selection. Choose player " + this.state.player + " pieces."});
@@ -49,10 +50,12 @@ export default class Game extends React.Component {
         const whiteFallenSoldiers = this.state.whiteFallenSoldiers.slice();
         const blackFallenSoldiers = this.state.blackFallenSoldiers.slice();
         const isDestEnemyOccupied = squares[i]? true : false; 
-        const isMovePossible = squares[this.state.sourceSelection].isMovePossible(this.state.sourceSelection, i, isDestEnemyOccupied);
+        const isMovePossible = squares[this.state.sourceSelection].isMovePossible(this.state.sourceSelection, i, 
+          isDestEnemyOccupied, this.state.enPassantPossible === i-8 || this.state.enPassantPossible === i+8);
         const srcToDestPath = squares[this.state.sourceSelection].getSrcToDestPath(this.state.sourceSelection, i);
         const isMoveLegal = this.isMoveLegal(srcToDestPath);
-
+        let enPassantPossible = this.state.enPassantPossible;
+        console.log(srcToDestPath)
         if(isMovePossible && isMoveLegal){
           if(squares[i] !== null){
             if(squares[i].player === 1){
@@ -61,6 +64,17 @@ export default class Game extends React.Component {
             else{
               blackFallenSoldiers.push(squares[i]);
             }
+          }
+          else  if (((enPassantPossible >= 24 && enPassantPossible <=31 && i === enPassantPossible -8)
+          || (enPassantPossible >= 32 && enPassantPossible <=39 && i === enPassantPossible +8) )
+            && squares[this.state.sourceSelection].name==="pawn" ) {
+              squares[enPassantPossible] = null
+          }
+          if (srcToDestPath.length===1 && squares[this.state.sourceSelection].name ==="pawn") {
+            this.setState({enPassantPossible: i})
+          }
+          else {
+            this.setState({enPassantPossible: -1})
           }
           console.log("whiteFallenSoldiers", whiteFallenSoldiers) ;
           console.log("blackFallenSoldiers", blackFallenSoldiers);

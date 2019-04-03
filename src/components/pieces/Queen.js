@@ -12,7 +12,7 @@ export default class Queen extends Piece {
     return (Math.abs(src - dest) % 9 === 0 || Math.abs(src - dest) % 7 === 0) ||
       (Math.abs(src - dest) % 8 === 0 || (dest >= (src - mod) && dest < (src + diff)));
   }
-
+  name ='queen'
   /**
    * get path between src and dest (src and dest exclusive)
    * @param  {num} src  
