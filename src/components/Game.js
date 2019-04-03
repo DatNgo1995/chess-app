@@ -4,7 +4,7 @@ import Board from "./Board";
 import FallenSoldierBlock from "./FallenSoldierBlock";
 import initialiseChessBoard from "./helper";
 import Rook from './pieces/Rook';
-
+import Promote from './Promote'
 export default class Game extends React.Component {
   constructor() {
     super();
@@ -92,6 +92,7 @@ export default class Game extends React.Component {
           ) {
             squares[enPassantPossible] = null;
           }
+          // implement castle
           else if ( squares[this.state.sourceSelection].name === "king" && srcToDestPath.length === 1 ){
             if ( i > this.state.sourceSelection) {
               squares[i+1] = null;
@@ -103,6 +104,7 @@ export default class Game extends React.Component {
               squares[i+1] = new Rook (this.state.player)
             }
           }
+          //set enPassantPossible
           if (
             srcToDestPath.length === 1 &&
             squares[this.state.sourceSelection].name === "pawn"
@@ -111,12 +113,21 @@ export default class Game extends React.Component {
           } else {
             this.setState({ enPassantPossible: -1 });
           }
+          //implement Promote
+          if (this.state.player === 1){
+              if ([0,1,2,3,4,5,6,7].indexOf(i) > 0 ) {
+
+              }
+          }
+
+
           console.log("whiteFallenSoldiers", whiteFallenSoldiers);
           console.log("blackFallenSoldiers", blackFallenSoldiers);
           squares[i] = squares[this.state.sourceSelection];
           squares[this.state.sourceSelection] = null;
           let player = this.state.player === 1 ? 2 : 1;
           let turn = this.state.turn === "white" ? "black" : "white";
+          // check castle conditions
           if (this.state.sourceSelection === 0) {
             this.setState({
               castlePosibility:{...this.state.castlePosibility,rookA8Moved: true}
@@ -209,6 +220,7 @@ export default class Game extends React.Component {
                 />
               }
             </div>
+            
           </div>
         </div>
       </div>
