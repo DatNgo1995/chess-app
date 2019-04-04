@@ -13,6 +13,7 @@ export default class Board extends React.Component {
     promotePossible = {promotePossible}
     id= {i}
     player = {player}
+    promoteHandle = {this.props.promoteHandle}
     onClick={() => this.props.onClick(i)}
     />
   }

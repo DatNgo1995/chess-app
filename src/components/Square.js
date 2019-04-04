@@ -14,6 +14,7 @@ export default function Square(props) {
         <Promote
           player={props.player}
           id={props.id}
+          promoteHandle = {props.promoteHandle}
         />
       ) : null}
     </div>

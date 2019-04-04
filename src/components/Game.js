@@ -25,10 +25,19 @@ export default class Game extends React.Component {
         rookH8Moved: false, //check if black right rook moved
         kingE1Moved: false, //check if white king moved
         kingE8Moved: false //check if black king moved
-      }
+      },
+      promotePiece : "",
+      promotePossible: false
     };
   }
-
+  promoteHandle = (piece)  => {
+    console.log(piece, this.state.destination)
+    this.setState({promotePiece : piece})
+    document.getElementById("promote-" + this.state.destination).style.display = "none";
+    let squares = this.state.squares.slice()
+    squares[this.state.destination] = this.state.promotePiece
+    this.setState({squares : squares})
+  }
   handleClick(i) {
     const squares = this.state.squares.slice();
     if (this.state.sourceSelection === -1) {
@@ -122,18 +131,22 @@ export default class Game extends React.Component {
               [0, 1, 2, 3, 4, 5, 6, 7].indexOf(i) > 0
             ) {
               document.getElementById("promote-" + i).style.display = "flex";
+              this.setState ({destination: i, promotePossible:true})
+              
+              
             }
             if (
               this.state.player === 2 &&
               [56, 57, 58, 59, 60, 61, 62, 63].indexOf(i) > 0
             ) {
               document.getElementById("promote-" + i).style.display = "flex";
+              this.setState ({destination: i, promotePossible:true})
+              
+              
             }
           }
-
-          console.log("whiteFallenSoldiers", whiteFallenSoldiers);
-          console.log("blackFallenSoldiers", blackFallenSoldiers);
-          squares[i] = squares[this.state.sourceSelection];
+          
+          squares[i] = !this.state.promotePossible ?  squares[this.state.sourceSelection] : squares[i]
           squares[this.state.sourceSelection] = null;
           let player = this.state.player === 1 ? 2 : 1;
           let turn = this.state.turn === "white" ? "black" : "white";
@@ -194,7 +207,8 @@ export default class Game extends React.Component {
             blackFallenSoldiers: blackFallenSoldiers,
             player: player,
             status: "",
-            turn: turn
+            turn: turn,
+            promotePossible: false
           });
         } else {
           this.setState({
@@ -222,6 +236,8 @@ export default class Game extends React.Component {
     return isLegal;
   }
 
+
+
   render() {
     return (
       <div>
@@ -230,6 +246,7 @@ export default class Game extends React.Component {
             <Board
               squares={this.state.squares}
               onClick={i => this.handleClick(i)}
+              promoteHandle = {this.promoteHandle}
             />
           </div>
           <div className="game-info">

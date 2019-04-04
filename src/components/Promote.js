@@ -7,11 +7,9 @@ import Queen from "./pieces/Queen";
 import Rook from "./pieces/Rook";
 export default class Promote extends React.Component {
   renderSquare(square, i, squareShade) {
-    return <Square piece={square} style={square.style}/>;
+    return <Square piece={square} style={square.style} onClick={this.props.promoteHandle.bind(this,square)}/>;
   }
-  selectPromotePieces = (square) => {
-      return square
-  }
+ 
   promotePieces = [
     new Queen(this.props.player),
     new Rook(this.props.player),
