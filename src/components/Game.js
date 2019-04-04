@@ -32,11 +32,13 @@ export default class Game extends React.Component {
   }
   promoteHandle = (piece)  => {
     console.log(piece, this.state.destination)
-    this.setState({promotePiece : piece})
-    document.getElementById("promote-" + this.state.destination).style.display = "none";
-    let squares = this.state.squares.slice()
-    squares[this.state.destination] = this.state.promotePiece
-    this.setState({squares : squares})
+    this.setState({promotePiece : piece}, () => {
+      document.getElementById("promote-" + this.state.destination).style.display = "none";
+      let squares = this.state.squares.slice()
+      squares[this.state.destination] = this.state.promotePiece
+      this.setState({squares : squares})
+    })
+    
   }
   handleClick(i) {
     const squares = this.state.squares.slice();
