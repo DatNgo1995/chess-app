@@ -35,8 +35,9 @@ export default class Game extends React.Component {
   handleClick(i) {
     let { sourceSelection, enPassantPossible, player } = this.state;
     const squares = this.state.squares.slice();
+    const isSourceSelectionnotCorrect = !squares[i] || squares[i].player !== player
     if (sourceSelection === -1) {
-      if (!squares[i] || squares[i].player !== player) {
+      if (isSourceSelectionnotCorrect) {
         this.setState({
           status: "Wrong selection. Choose player " + player + " pieces."
         });
