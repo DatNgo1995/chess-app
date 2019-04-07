@@ -225,13 +225,13 @@ E1_SQUARE = 60*/
     return (
       <div>
         <div className="game">
-          <div className="game-board">
+          
             <Board
               squares={this.state.squares}
               onClick={i => this.handleClick(i)}
               promoteHandle={this.promoteHandle}
             />
-          </div>
+          
           <div className="game-info">
             <h3>Turn</h3>
             <div
