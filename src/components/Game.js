@@ -35,20 +35,12 @@ export default class Game extends React.Component {
   handleClick(i) {
     let { sourceSelection, enPassantPossible, player } = this.state;
     const squares = this.state.squares.slice();
-    const isSourceSelectionnotCorrect = !squares[i] || squares[i].player !== player
+    const isSourceSelectionNotCorrect = !squares[i] || squares[i].player !== player
+    const isCapturePiecesAlly = squares[i] && squares[i].player === player
     if (sourceSelection === -1) {
-      if (isSourceSelectionnotCorrect) {
-        this.setState({
-          status: "Wrong selection. Choose player " + player + " pieces."
-        });
-      } else {
-        this.setState({
-          status: "Choose destination for the selected piece",
-          sourceSelection: i
-        });
-      }
+      this.handleNotCorrectSource (isSourceSelectionNotCorrect,player,i)
     } else if (sourceSelection > -1) {
-      if (squares[i] && squares[i].player === player) {
+      if (isCapturePiecesAlly) {
         this.setState({
           status: "Wrong selection. Choose valid source and destination again.",
           sourceSelection: -1
@@ -87,12 +79,9 @@ export default class Game extends React.Component {
 
         if (isMovePossible && isMoveLegal) {
           if (squares[i]) {
-            if (squares[i].player === 1) {
-              whiteFallenSoldiers.push(squares[i]);
-            } else {
-              blackFallenSoldiers.push(squares[i]);
-            }
+            this.handleFallenPieces  (squares[i], whiteFallenSoldiers, blackFallenSoldiers)
           }
+          
           // implement en passant
           else if (canEnPassant) {
             squares[enPassantPossible] = null;
@@ -154,58 +143,25 @@ export default class Game extends React.Component {
     }
     return isLegal;
   }
+   sourceSelectionAndCastleRelation = {
+      0: 'rookA8Moved',
+     7: 'rookH8Moved',
+     56: 'rookA1Moved' ,
+     63 :'rookH1Moved' ,
+     4: 'kingE8Moved' ,
+     60: 'kingE1Moved'
 
+   }
   castleSetState = (sourceSelection) => {
     
     // check castle conditions
-    if (sourceSelection === 0) {
-      this.setState({
-        castlePosibility: {
-          ...this.state.castlePosibility,
-          rookA8Moved: true
-        }
-      });
-    }
-    if (sourceSelection === 7) {
-      this.setState({
-        castlePosibility: {
-          ...this.state.castlePosibility,
-          rookH8Moved: true
-        }
-      });
-    }
-    if (sourceSelection === 56) {
-      this.setState({
-        castlePosibility: {
-          ...this.state.castlePosibility,
-          rookA1Moved: true
-        }
-      });
-    }
-    if (sourceSelection === 63) {
-      this.setState({
-        castlePosibility: {
-          ...this.state.castlePosibility,
-          rookH1Moved: true
-        }
-      });
-    }
-    if (sourceSelection === 4) {
-      this.setState({
-        castlePosibility: {
-          ...this.state.castlePosibility,
-          kingE8Moved: true
-        }
-      });
-    }
-    if (sourceSelection === 60) {
-      this.setState({
-        castlePosibility: {
-          ...this.state.castlePosibility,
-          kingE1Moved: true
-        }
-      });
-    }
+    this.setState( {
+      castlePosibility : {
+      ...this.state.castlePosibility,
+      [this.sourceSelectionAndCastleRelation[sourceSelection]] : true
+      }
+      })
+   
   };
   
   promoteHandle = piece => {
@@ -239,6 +195,26 @@ export default class Game extends React.Component {
     ) {
       document.getElementById("promote-" + i).style.display = "flex";
       this.setState({ destination: i, promotePossible: true });
+    }
+  }
+  handleFallenPieces = (square, whiteFallenSoldiers, blackFallenSoldiers) => {
+   
+      if (square.player === 1) {
+        whiteFallenSoldiers.push(square);
+      } else {
+        blackFallenSoldiers.push(square);
+      }
+  }
+  handleNotCorrectSource = (isSourceSelectionNotCorrect,player,i) => {
+    if (isSourceSelectionNotCorrect) {
+      this.setState({
+        status: "Wrong selection. Choose player " + player + " pieces."
+      });
+    } else {
+      this.setState({
+        status: "Choose destination for the selected piece",
+        sourceSelection: i
+      });
     }
   }
   render() {
