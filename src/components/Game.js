@@ -2,9 +2,12 @@ import React from "react";
 import "../index.css";
 import Board from "./Board";
 import FallenSoldierBlock from "./FallenSoldierBlock";
-import initialiseChessBoard from "./helper";
+import { initialiseChessBoard } from "./helper";
 import Rook from "./pieces/Rook";
-
+const MIN_BLACK_PAWN_ENPASSANT = 24,
+  MAX_BLACK_PAWN_ENPASSANT = 31,
+  MIN_WHITE_PAWN_ENPASSANT = 32,
+  MAX_WHITE_PAWN_ENPASSANT = 39;
 export default class Game extends React.Component {
   constructor() {
     super();
@@ -32,13 +35,14 @@ export default class Game extends React.Component {
     };
   }
 
-  handleClick(i) {
+  handleClick = i => {
     let { sourceSelection, enPassantPossible, player } = this.state;
     const squares = this.state.squares.slice();
-    const isSourceSelectionNotCorrect = !squares[i] || squares[i].player !== player
-    const isCapturePiecesAlly = squares[i] && squares[i].player === player
+    const isSourceSelectionNotCorrect =
+      !squares[i] || squares[i].player !== player;
+    const isCapturePiecesAlly = squares[i] && squares[i].player === player;
     if (sourceSelection === -1) {
-      this.handleNotCorrectSource (isSourceSelectionNotCorrect,player,i)
+      this.handleNotCorrectSource(isSourceSelectionNotCorrect, player, i);
     } else if (sourceSelection > -1) {
       if (isCapturePiecesAlly) {
         this.setState({
@@ -54,41 +58,44 @@ export default class Game extends React.Component {
           sourceSelection,
           i,
           isDestEnemyOccupied,
-          enPassantPossible === i - 8 || enPassantPossible === i + 8
+          enPassantPossible === i - 8 || enPassantPossible === i + 8,
+          this.state.castlePosibility
         );
         const srcToDestPath = squares[sourceSelection].getSrcToDestPath(
           sourceSelection,
           i
         );
         const isMoveLegal = this.isMoveLegal(srcToDestPath);
-
+        const sourceSelectionName = squares[sourceSelection].name;
         const canEnPassant =
-          ((enPassantPossible >= 24 &&
-            enPassantPossible <= 31 &&
+          ((enPassantPossible >= MIN_BLACK_PAWN_ENPASSANT &&
+            enPassantPossible <= MAX_BLACK_PAWN_ENPASSANT &&
             i === enPassantPossible - 8) ||
-            (enPassantPossible >= 32 &&
-              enPassantPossible <= 39 &&
+            (enPassantPossible >= MIN_WHITE_PAWN_ENPASSANT &&
+              enPassantPossible <= MAX_WHITE_PAWN_ENPASSANT &&
               i === enPassantPossible + 8)) &&
-          squares[sourceSelection].name === "pawn";
+          sourceSelectionName === "pawn";
         const castleThisMove =
-          squares[sourceSelection].name === "king" &&
-          srcToDestPath.length === 1;
+          sourceSelectionName === "king" && srcToDestPath.length === 1;
         const enableEnPassant =
-          srcToDestPath.length === 1 &&
-          squares[sourceSelection].name === "pawn";
+          srcToDestPath.length === 1 && sourceSelectionName === "pawn";
 
         if (isMovePossible && isMoveLegal) {
           if (squares[i]) {
-            this.handleFallenPieces  (squares[i], whiteFallenSoldiers, blackFallenSoldiers)
+            this.handleFallenPieces(
+              squares[i],
+              whiteFallenSoldiers,
+              blackFallenSoldiers
+            );
           }
-          
+
           // implement en passant
           else if (canEnPassant) {
             squares[enPassantPossible] = null;
           }
           // implement castle
           else if (castleThisMove) {
-            this.castleImplement(i,sourceSelection,player,squares)
+            this.castleImplement(i, sourceSelection, player, squares);
           }
           //set enPassantPossible
           enableEnPassant
@@ -96,10 +103,10 @@ export default class Game extends React.Component {
             : this.setState({ enPassantPossible: -1 });
 
           //implement Promote
-          if (squares[sourceSelection].name === "pawn") {
-            this.promoteImplement(player,i) 
+          if (sourceSelectionName === "pawn") {
+            this.promoteImplement(player, i);
           }
-
+          //set new state when move is made
           squares[i] = !this.state.promotePossible
             ? squares[sourceSelection]
             : squares[i];
@@ -127,7 +134,7 @@ export default class Game extends React.Component {
         }
       }
     }
-  }
+  };
 
   /**
    * Check all path indices are null. For one steps move of pawn/others or jumping moves of knight array is empty, so  move is legal.
@@ -137,33 +144,32 @@ export default class Game extends React.Component {
   isMoveLegal(srcToDestPath) {
     let isLegal = true;
     for (let i = 0; i < srcToDestPath.length; i++) {
-      if (this.state.squares[srcToDestPath[i]] !== null) {
+      if (this.state.squares[srcToDestPath[i]]) {
         isLegal = false;
       }
     }
     return isLegal;
   }
-   sourceSelectionAndCastleRelation = {
-      0: 'rookA8Moved',
-     7: 'rookH8Moved',
-     56: 'rookA1Moved' ,
-     63 :'rookH1Moved' ,
-     4: 'kingE8Moved' ,
-     60: 'kingE1Moved'
-
-   }
-  castleSetState = (sourceSelection) => {
-    
-    // check castle conditions
-    this.setState( {
-      castlePosibility : {
-      ...this.state.castlePosibility,
-      [this.sourceSelectionAndCastleRelation[sourceSelection]] : true
-      }
-      })
-   
+  /*Coordinate of A8_SQUARE = 0, H8_SQUARE = 7, A1_SQUARE = 56, H1_SQUARE = 63, E8_SQUARE = 4,
+E1_SQUARE = 60*/
+  sourceSelectionAndCastleRelation = {
+    0: "rookA8Moved",
+    7: "rookH8Moved",
+    56: "rookA1Moved",
+    63: "rookH1Moved",
+    4: "kingE8Moved",
+    60: "kingE1Moved"
   };
-  
+  castleSetState = sourceSelection => {
+    // check castle conditions
+    this.setState({
+      castlePosibility: {
+        ...this.state.castlePosibility,
+        [this.sourceSelectionAndCastleRelation[sourceSelection]]: true
+      }
+    });
+  };
+
   promoteHandle = piece => {
     this.setState({ promotePiece: piece }, () => {
       document.getElementById(
@@ -174,38 +180,36 @@ export default class Game extends React.Component {
       this.setState({ squares: squares });
     });
   };
-  castleImplement = (i,sourceSelection,player,squares) => {
+  castleImplement = (i, sourceSelection, player, squares) => {
     if (i > sourceSelection) {
       squares[i + 1] = null;
       squares[i - 1] = new Rook(player);
-      console.log(i, squares[i + 3], squares[i + 1]);
     } else {
       squares[i - 2] = null;
       squares[i + 1] = new Rook(player);
     }
-  }
-  promoteImplement = (player,i) => {
-    if (player === 1 && [0, 1, 2, 3, 4, 5, 6, 7].indexOf(i) > 0) {
+  };
+  promoteImplement = (player, i) => {
+    let promoteWhite = player === 1 && [0, 1, 2, 3, 4, 5, 6, 7].indexOf(i) > 0,
+      promoteBlack =
+        player === 2 && [56, 57, 58, 59, 60, 61, 62, 63].indexOf(i) > 0;
+    if (promoteWhite) {
       document.getElementById("promote-" + i).style.display = "flex";
       this.setState({ destination: i, promotePossible: true });
     }
-    if (
-      player === 2 &&
-      [56, 57, 58, 59, 60, 61, 62, 63].indexOf(i) > 0
-    ) {
+    if (promoteBlack) {
       document.getElementById("promote-" + i).style.display = "flex";
       this.setState({ destination: i, promotePossible: true });
     }
-  }
+  };
   handleFallenPieces = (square, whiteFallenSoldiers, blackFallenSoldiers) => {
-   
-      if (square.player === 1) {
-        whiteFallenSoldiers.push(square);
-      } else {
-        blackFallenSoldiers.push(square);
-      }
-  }
-  handleNotCorrectSource = (isSourceSelectionNotCorrect,player,i) => {
+    if (square.player === 1) {
+      whiteFallenSoldiers.push(square);
+    } else {
+      blackFallenSoldiers.push(square);
+    }
+  };
+  handleNotCorrectSource = (isSourceSelectionNotCorrect, player, i) => {
     if (isSourceSelectionNotCorrect) {
       this.setState({
         status: "Wrong selection. Choose player " + player + " pieces."
@@ -216,7 +220,7 @@ export default class Game extends React.Component {
         sourceSelection: i
       });
     }
-  }
+  };
   render() {
     return (
       <div>

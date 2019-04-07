@@ -11,7 +11,13 @@ export default class King extends Piece {
   }
   name = "king";
 
-  isMovePossible(src, dest, enPassant, castleProperty) {
+  isMovePossible = (
+    src,
+    dest,
+    isDestEnemyOccupied,
+    enPassant,
+    castleProperty
+  ) => {
     let whiteCastleShort =
         src === 60 &&
         dest === 62 &&
@@ -32,7 +38,6 @@ export default class King extends Piece {
         dest === 2 &&
         !castleProperty.kingE1Moved &&
         !castleProperty.rookA8Moved;
-        console.log(whiteCastleShort)
     return (
       src - 9 === dest ||
       src - 8 === dest ||
@@ -47,16 +52,12 @@ export default class King extends Piece {
       blackCastleShort ||
       blackCastleLong
     );
-  }
+  };
 
   /**
    * always returns empty array because of one step
    * @return {[]}
    */
-  getSrcToDestPath(src, dest) {
-    if (src - dest === 2) return [src - 1];
-    if (src - dest === -2) return [src + 1];
-
-    return [];
-  }
+  getSrcToDestPath = (src, dest) =>
+    src - dest === 2 ? [src - 1] : src - dest === -2 ? [src + 1] : [];
 }
