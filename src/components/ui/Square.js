@@ -1,5 +1,5 @@
 import React from "react";
-import "../index.css";
+import "../../index.css";
 import Promote from "./Promote";
 export const Square = props => 
   <div className={"square " + props.shade}>

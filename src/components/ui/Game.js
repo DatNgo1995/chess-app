@@ -1,5 +1,5 @@
 import React from "react";
-import "../index.css";
+import "../../index.css";
 import Board from "./Board";
 import FallenSoldierBlock from "./FallenSoldierBlock";
 import { initialiseChessBoard } from "./helper";
@@ -41,9 +41,9 @@ export default class Game extends React.Component {
     const isSourceSelectionNotCorrect =
       !squares[i] || squares[i].player !== player;
     const isCapturePiecesAlly = squares[i] && squares[i].player === player;
-    const selectingSquareSquare = sourceSelection === -1
+    const selectingSourceSquare = sourceSelection === -1
     const selectingDestinationSquare = sourceSelection > -1
-    if (selectingSquareSquare) {
+    if (selectingSourceSquare) {
       this.handleNotCorrectSource(isSourceSelectionNotCorrect, player, i);
     } else if (selectingDestinationSquare) {
       if (isCapturePiecesAlly) {
