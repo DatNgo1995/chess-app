@@ -1,7 +1,7 @@
+import { combineReducers } from 'redux'
 export const notCorrectSource = (state, action ) =>
     action.type=== "notCorrectSource" ? 
-    [
-        ...state
-       
-    ]
+    action.payload
     : state
+
+    export default combineReducers({notCorrectSource})

@@ -8,6 +8,7 @@ const MIN_BLACK_PAWN_ENPASSANT = 24,
   MAX_BLACK_PAWN_ENPASSANT = 31,
   MIN_WHITE_PAWN_ENPASSANT = 32,
   MAX_WHITE_PAWN_ENPASSANT = 39;
+
 export default class Game extends React.Component {
   constructor() {
     super();
