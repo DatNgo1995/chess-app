@@ -41,9 +41,11 @@ export default class Game extends React.Component {
     const isSourceSelectionNotCorrect =
       !squares[i] || squares[i].player !== player;
     const isCapturePiecesAlly = squares[i] && squares[i].player === player;
-    if (sourceSelection === -1) {
+    const selectingSquareSquare = sourceSelection === -1
+    const selectingDestinationSquare = sourceSelection > -1
+    if (selectingSquareSquare) {
       this.handleNotCorrectSource(isSourceSelectionNotCorrect, player, i);
-    } else if (sourceSelection > -1) {
+    } else if (selectingDestinationSquare) {
       if (isCapturePiecesAlly) {
         this.setState({
           status: "Wrong selection. Choose valid source and destination again.",
@@ -81,6 +83,7 @@ export default class Game extends React.Component {
           srcToDestPath.length === 1 && sourceSelectionName === "pawn";
 
         if (isMovePossible && isMoveLegal) {
+          //check if square i has a piece in it
           if (squares[i]) {
             this.handleFallenPieces(
               squares[i],

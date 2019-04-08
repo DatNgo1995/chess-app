@@ -10,27 +10,18 @@ ul {
 }
 .gameboard {
   width: 50%;
-
   max-width: 800px;
-
   display: grid;
-
   grid-template-rows: repeat(8, 1fr);
-
   height: 50vw;
   max-height: 800px;
 }
 .board-row {
   width: 100%;
-
   display: grid;
-
   grid-template-columns: repeat(8, 1fr);
-
   height: 6.25vw;
-
   position: relative;
-
   max-height: 100px;
 }
 .board-row:after {
@@ -48,30 +39,17 @@ ul {
   width: 6.25vw;
   max-width: 100px;
   border: 1px solid transparent;
-
   float: left;
-
   font-size: 24px;
-
   font-weight: bold;
-
   line-height: 34px;
-
   height: 6.25vw;
-
   margin-right: -1px;
-
   margin-top: -1px;
-
   padding: 0;
-
   text-align: center;
-
-
   position: relative;
-
   display: block;
-
   max-height: 100px;
 }
 
@@ -85,7 +63,6 @@ ul {
 
 .game {
   display: flex;
-  flex-direction: column;
   align-items: center;
 }
 
@@ -94,22 +71,14 @@ ul {
   max-width: 800px;
   margin: 20px;
   display: grid;
-
-grid-template-columns: 1fr 1fr 1fr auto;
-
 padding: 1rem;
 }
 .game-status {
   margin-top: 20px;
-
 min-height: 50px;
-
 width: 100%;
-
 display: block;
-
 max-width: 400px;
-
 position: relative;
 }
 .icons-attribution,
