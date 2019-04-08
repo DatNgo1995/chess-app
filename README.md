@@ -1,5 +1,5 @@
 # A Application to play chess written using ReactJS.
-
+![alt text](./sample-play.png)
 ## Introduction
 
 This is an chess application on progress. Special moves such as En Passant, Castle and Promote are included.
